@@ -1,0 +1,15 @@
+{
+  "name": "always-on-worker",
+  "version": "1.0.0",
+  "private": true,
+  "description": "One long-running process: a webhook receiver, a cron job and a queue worker, storing state in a Back4app backend.",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "license": "MIT",
+  "dependencies": {
+    "express": "^5.2.1",
+    "parse": "^8.6.0"
+  }
+}
