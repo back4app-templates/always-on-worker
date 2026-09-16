@@ -1,6 +1,6 @@
 {
   "name": "always-on-worker",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "private": true,
   "description": "One long-running process: a webhook receiver, a cron job and a queue worker, storing state in a Back4app backend.",
   "main": "server.js",
