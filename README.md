@@ -1,14 +1,14 @@
 # always-on-worker
 
-**One container that never sleeps: a signed webhook receiver, a cron heartbeat and a queue worker — with every byte of state in a managed backend, and no VPS to patch.**
+**Run a bot, a webhook receiver or a cron job 24/7 without renting a VPS.** One Node.js container that never sleeps, with a signed webhook receiver, a cron heartbeat and a queue worker, and every byte of state in a managed [Back4app](https://www.back4app.com/) backend. 75 lines of server code, an 8-line Dockerfile, nothing to patch.
 
-This is the companion repository for the Back4app blog post *How to Run a Bot, Webhook or Cron Job 24/7 Without Renting a VPS*. Everything in the post was measured on this exact code, on September 15–16, 2026; the numbers below come from that run.
+Measured on September 15–16, 2026, on Back4app Containers: Deploy click → `DEPLOYMENT READY` in **57 s**, a job created over REST picked up and finished in **2.8 s**, a `git push` live in **44 s** with zero failed requests. Every number in the article comes from this exact code.
 
-> Article: link added at publication.
+> Read the article: *How to Run a Bot, Webhook or Cron Job 24/7 Without Renting a VPS* — link added at publication.
 
 ## What it does
 
-A single 75-line Node.js process (`server.js`) with three jobs that need a process to stay awake:
+A single Node.js process (`server.js`) with three jobs that need a process to stay awake:
 
 | Job | Trigger | What it writes to the backend |
 |---|---|---|
@@ -16,7 +16,7 @@ A single 75-line Node.js process (`server.js`) with three jobs that need a proce
 | Cron tick | `setInterval` every 60 s | `Heartbeat {at, up_s}` — count the rows and you have the real uptime |
 | Queue worker | `setInterval` every 5 s | takes the oldest `Job` with `status: "pending"`, runs it, stores `result` and `ms` |
 
-The container holds nothing that matters. All three classes live in a **Back4app backend** (managed Parse Server), reached over HTTPS with the Parse JS SDK. A 9-line Cloud Code hook (`cloud/main.js`) is the one rule the container cannot bypass: a `Job` with an unknown `kind` is rejected with `400 {"code":142,"error":"unknown job kind."}`.
+The container holds nothing that matters. All three classes live in the backend, reached over HTTPS with the Parse JS SDK. A 9-line Cloud Code hook (`cloud/main.js`) is the one rule the container cannot bypass: a `Job` with an unknown `kind` is rejected with `400 {"code":142,"error":"unknown job kind."}`.
 
 ```
 GitHub ──signed webhook──▶ ┌─────────────────────┐        ┌──────────────────────┐
@@ -26,7 +26,7 @@ GitHub ──signed webhook──▶ ┌─────────────�
                            └─────────────────────┘        └──────────────────────┘
 ```
 
-## What we measured (September 2026, Back4app Containers)
+## What we measured
 
 | Measurement | Result |
 |---|---|
@@ -37,7 +37,7 @@ GitHub ──signed webhook──▶ ┌─────────────�
 | `git push` with Autodeploy on → new version live | 44 s, zero failed requests during the swap |
 | RAM at idle | 25–34 MB |
 
-Two findings worth knowing before you deploy your own: the platform's health check is a **port** check (a path that answered `404` passed it), and the first Cloud Code deploy on a fresh backend ships nothing — deploy twice and prove the hook with a request.
+Two findings before you deploy your own: the platform's health check is a **port** check (a path that answered `404` passed it), and the first Cloud Code deploy on a fresh backend ships nothing. Deploy twice and prove the hook with a request.
 
 ## Files
 
@@ -46,6 +46,15 @@ Two findings worth knowing before you deploy your own: the platform's health che
 - `Dockerfile` — `node:22-alpine`, `npm ci --omit=dev`, `EXPOSE 8080`.
 - `deploy-check.sh` — fires a signed and an unsigned webhook at a deployment URL and checks health and stats.
 
+## Deploy your own
+
+1. **Create a free account.** Sign up at [https://www.back4app.com/signup](https://www.back4app.com/signup). One account gives you both halves: **Build your Backend** (the three classes and the rule) and **Containers** (the process that never sleeps).
+2. **Backend:** New App → Build your Backend. On Overview copy the App ID and the JavaScript key. **Cloud Code → main.js**: paste `cloud/main.js`, Deploy, then edit and deploy again; prove the hook with a request.
+3. **Container:** push this repo to GitHub, then **Containers → New App → Deploy from GitHub**. Set `PARSE_APP_ID`, `PARSE_JS_KEY` and `WEBHOOK_SECRET` as environment variables and the health check to `/healthz`. Deploy.
+4. Verify: `WEBHOOK_SECRET=… ./deploy-check.sh https://<your-app>.b4a.run`
+
+On the free plan the container lives 60 minutes per deploy, enough to test everything here. For "24/7", change the plan (Shared starts at $5/month as of September 2026) and turn on **Autodeploy** under Settings → Build & deploy.
+
 ## Run locally
 
 ```bash
@@ -53,15 +62,6 @@ cp .env.example .env      # PARSE_APP_ID, PARSE_JS_KEY, WEBHOOK_SECRET
 npm install               # pins parse@8 — on Node 25, an unpinned install silently gets parse@3.5.1
 node --env-file=.env server.js
 ```
-
-## Deploy
-
-1. Create a Back4app backend app; paste `cloud/main.js` into **Cloud Code → main.js** and deploy (twice, see above).
-2. Push this repo to GitHub, then **Back4app Containers → New App → Deploy from GitHub**.
-3. Set `PARSE_APP_ID`, `PARSE_JS_KEY` and `WEBHOOK_SECRET` as environment variables; set the health check to `/healthz`; deploy.
-4. Verify: `WEBHOOK_SECRET=… ./deploy-check.sh https://<your-app>.b4a.run`
-
-On the free plan the container lives 60 minutes per deploy — enough to test everything here. For "24/7", change the plan (Shared starts at $5/month as of September 2026) and turn on **Autodeploy** under Settings → Build & deploy.
 
 ## Create a job from anywhere
 
@@ -73,6 +73,10 @@ curl -X POST "https://parseapi.back4app.com/classes/Job" \
 ```
 
 The worker picks it up within 5 seconds; `GET /stats` on the container shows the counts.
+
+## What the platform gives you
+
+Containers build the Dockerfile, keep the process running behind HTTPS on a public URL and redeploy on push. The backend is a managed Parse Server with a database, REST and GraphQL APIs, Cloud Code and a dashboard where every Event, Heartbeat and Job is a row you can inspect. Documentation: [https://www.back4app.com/docs-containers](https://www.back4app.com/docs-containers) · [https://www.back4app.com/docs](https://www.back4app.com/docs).
 
 ## License
 
