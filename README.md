@@ -4,7 +4,7 @@
 
 Measured on September 15–16, 2026, on Back4app Containers: Deploy click → `DEPLOYMENT READY` in **57 s**, a job created over REST picked up and finished in **2.8 s**, a `git push` live in **44 s** with zero failed requests. Every number in the article comes from this exact code.
 
-> **Read the article:** [How to Run a Bot, Webhook or Cron Job 24/7 Without Renting a VPS](https://www.back4app.com/blog/run-a-bot-webhook-or-cron-24-7-without-a-vps)
+> **Read the article:** [How to Run a Node.js Bot, Webhook or Cron Job 24/7 Without a VPS](https://www.back4app.com/blog/run-a-bot-webhook-or-cron-24-7-without-a-vps)
 
 ## What it does
 
