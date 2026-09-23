@@ -1,10 +1,12 @@
 # always-on-worker
 
+[![Deploy on Back4app](https://img.shields.io/badge/Deploy%20on-Back4app-1568B8?style=for-the-badge&logo=data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCI+PHBhdGggZmlsbD0iI2ZmZiIgZD0iTTEyIDJMMiA3djEwbDEwIDUgMTAtNVY3eiIvPjwvc3ZnPg==)](https://www.back4app.com/signup?utm_source=github&utm_medium=repo&utm_campaign=always-on-worker)
+
 **Run a bot, a webhook receiver or a cron job 24/7 without renting a VPS.** One Node.js container that never sleeps, with a signed webhook receiver, a cron heartbeat and a queue worker, and every byte of state in a managed [Back4app](https://www.back4app.com/) backend. 75 lines of server code, an 8-line Dockerfile, nothing to patch.
 
 Measured on September 15–16, 2026, on Back4app Containers: Deploy click → `DEPLOYMENT READY` in **57 s**, a job created over REST picked up and finished in **2.8 s**, a `git push` live in **44 s** with zero failed requests. Every number in the article comes from this exact code.
 
-> **Read the article:** [How to Run a Node.js Bot, Webhook or Cron Job 24/7 Without a VPS](https://www.back4app.com/blog/run-a-bot-webhook-or-cron-24-7-without-a-vps)
+> **Read the article:** [How to Run a Node.js Bot, Webhook or Cron Job 24/7 Without a VPS](https://www.back4app.com/blog/run-a-bot-webhook-or-cron-24-7-without-a-vps?utm_source=github&utm_medium=repo&utm_campaign=always-on-worker)
 
 ## What it does
 
@@ -48,7 +50,7 @@ Two findings before you deploy your own: the platform's health check is a **port
 
 ## Deploy your own
 
-1. **Create a free account.** Sign up at [https://www.back4app.com/signup](https://www.back4app.com/signup). One account gives you both halves: **Build your Backend** (the three classes and the rule) and **Containers** (the process that never sleeps).
+1. **Create a free account.** Sign up at [https://www.back4app.com/signup?utm_source=github&utm_medium=repo&utm_campaign=always-on-worker](https://www.back4app.com/signup?utm_source=github&utm_medium=repo&utm_campaign=always-on-worker). One account gives you both halves: **Build your Backend** (the three classes and the rule) and **Containers** (the process that never sleeps).
 2. **Backend:** New App → Build your Backend. On Overview copy the App ID and the JavaScript key. **Cloud Code → main.js**: paste `cloud/main.js`, Deploy, then edit and deploy again; prove the hook with a request.
 3. **Container:** push this repo to GitHub, then **Containers → New App → Deploy from GitHub**. Set `PARSE_APP_ID`, `PARSE_JS_KEY` and `WEBHOOK_SECRET` as environment variables and the health check to `/healthz`. Deploy.
 4. Verify: `WEBHOOK_SECRET=… ./deploy-check.sh https://<your-app>.b4a.run`
@@ -76,7 +78,7 @@ The worker picks it up within 5 seconds; `GET /stats` on the container shows the
 
 ## What the platform gives you
 
-Containers build the Dockerfile, keep the process running behind HTTPS on a public URL and redeploy on push. The backend is a managed Parse Server with a database, REST and GraphQL APIs, Cloud Code and a dashboard where every Event, Heartbeat and Job is a row you can inspect. Documentation: [https://www.back4app.com/docs-containers](https://www.back4app.com/docs-containers) · [https://www.back4app.com/docs](https://www.back4app.com/docs).
+Containers build the Dockerfile, keep the process running behind HTTPS on a public URL and redeploy on push. The backend is a managed Parse Server with a database, REST and GraphQL APIs, Cloud Code and a dashboard where every Event, Heartbeat and Job is a row you can inspect. Documentation: [https://www.back4app.com/docs-containers?utm_source=github&utm_medium=repo&utm_campaign=always-on-worker](https://www.back4app.com/docs-containers?utm_source=github&utm_medium=repo&utm_campaign=always-on-worker) · [https://www.back4app.com/docs?utm_source=github&utm_medium=repo&utm_campaign=always-on-worker](https://www.back4app.com/docs?utm_source=github&utm_medium=repo&utm_campaign=always-on-worker).
 
 ## License
 
